@@ -1,0 +1,8 @@
+{% extends 'list/base.html' %}
+
+{% block content %}
+    {% for o in obj %}
+    <li>{{o.cad_num}} {{o.tip_oks}}</li>
+    {% endfor %}
+
+{% endblock %}

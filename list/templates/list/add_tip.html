@@ -1,0 +1,41 @@
+{% extends 'list/base.html' %}
+
+{% block content %}
+<form action="{% url 'add_tip' %}" method="post">
+    <ul class="form-style-1">
+        <p><h1>Добавление объекта</h1></p>
+    {% csrf_token %}
+        <div>{{ form.non_field_errors }}</div>
+    {% for f in form %}
+    <li>
+    <label for="{{ f.id_for_label }}">{{ f.label }}: </label>{{ f }}
+        {% if f.help_text %}
+        <span class="helptext">{{ f.help_text }}</span>
+        {% endif %}
+    </li>
+    <div class="form-error">{{ f.errors }}</div>
+    {% endfor%}
+        <li><input type="submit" /></li>
+    </ul>
+</form>
+
+<form action="{% url 'add_tip' %}" method="post" enctype="multipart/form-data">
+    <ul class="form-style-1">
+        <p><h1>Чтение xml</h1></p>
+    {% csrf_token %}
+        <div>{{ form2.non_field_errors }}</div>
+    {% for f in form2 %}
+    <li>
+    <label for="{{ f.id_for_label }}">{{ f.label }}: </label>{{ f }}
+        {% if f.help_text %}
+        <span class="helptext">{{ f.help_text }}</span>
+        {% endif %}
+    </li>
+    <div class="form-error">{{ f.errors }}</div>
+    {% endfor%}
+        <li><input type="submit" /></li>
+    </ul>
+</form>
+
+
+{% endblock %}

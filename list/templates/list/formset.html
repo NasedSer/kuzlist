@@ -1,0 +1,40 @@
+{% load crispy_forms_tags %}
+        {{ formset.management_form|crispy }}
+        {{ formset.non_field_errors }}
+        {% for form in formset.forms %}
+        {% if forloop.first %}
+        {% endif %}
+        <div class="formset_row-{{ formset.prefix }}">
+            <div class='row'>
+            <div class='col-10'>
+            {{ form.id }}
+            <div class="inline {{ formset.prefix }}">
+                {% for field in form.visible_fields %}
+                        <div>
+                            {# Include the hidden fields in the form #}
+                            {% if forloop.first %}
+                                {% for hidden in form.hidden_fields %}
+                                    {{ hidden }}
+                                {% endfor %}
+                            {% endif %}
+                            {{ field|as_crispy_field }}
+                            <div class="form-error">{{ field.errors.as_ul }}</div>
+                        </div>
+                {% endfor %}
+            </div>
+            </div>
+                <div class='col-2'> </div>
+            </div>
+        </div>
+        {% endfor %}
+
+<script type="text/javascript">
+$('.formset_row-{{ formset.prefix }}').formset({
+    addText: 'Добавить',
+    deleteText: 'Удалить',
+    addCssClass: 'add-row_{{ formset.prefix }} btn btn-info',
+    deleteCssClass:' delete-row btn btn-danger',
+    deleteContainerClass: 'col-2',
+    prefix: '{{ formset.prefix }}'
+});
+</script>

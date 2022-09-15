@@ -1,0 +1,160 @@
+{% extends 'list/base.html' %}
+
+{% block link%}
+<link type="text/css" href="{% static 'list/css/form.css' %}" rel="stylesheet">
+<script src="{% static 'list/js/jquery.formset.js' %}"></script>
+<style type="text/css">
+   A.add-row,
+   .delete-row {
+    text-decoration: none; /* Убирает подчеркивание для ссылок */
+    background: url(/static/css/image/icon-addlink.svg) no-repeat 0 50%; /* Параметры картинки */
+    padding-left: 20px; /* Расстояние слева */
+   }
+   A:hover.add-row,
+   :hover.delete-row {
+    text-decoration: none; /* Добавляем подчеркивание при наведении курсора на ссылку */
+    color: red; /* Ссылка красного цвета */
+   }
+   A.delete-row {
+    text-decoration: none; /* Убирает подчеркивание для ссылок */
+    background: url(/static/css/image/inline-delete.svg) no-repeat 0 50%; /* Параметры картинки */
+    padding-left: 20px; /* Расстояние слева */
+   }
+   A:hover.delete-row {
+    text-decoration: none; /* Добавляем подчеркивание при наведении курсора на ссылку */
+    color: red; /* Ссылка красного цвета */
+   }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div id="holder" style="width:200px; height:200px; border: 10px dashed #ccc">Брось сюда</div>
+<form action="" method="post" enctype="multipart/form-data">
+    <ul class="form-style-1">
+        <p><h1>Добавление объекта</h1></p>
+    {% csrf_token %}
+        <div>{{ form.non_field_errors }}</div>
+    {% for f in form %}
+    <li>
+    <label for="{{ f.id_for_label }}">{{ f.label }}: </label>{{ f }}
+        {% if f.help_text %}
+        <span class="helptext">{{ f.help_text }}</span>
+        {% endif %}
+    </li>
+    <div class="form-error">{{ f.errors }}</div>
+    {% endfor%}
+    <fieldset>
+        <legend>Помещения</legend>
+        {{ premises.management_form }}
+        {{ premises.non_field_errors }}
+        {% for form in premises %}
+        <div class="formset_row">
+            {{ form.id }}
+            <div class="inline {{ premises.prefix }}">
+                {% for field in form.visible_fields %}
+                        <div>
+                            {# Include the hidden fields in the form #}
+                            {% if forloop.first %}
+                                {% for hidden in form.hidden_fields %}
+                                    {{ hidden }}
+                                {% endfor %}
+                            {% endif %}
+                            {{ field.label_tag }}
+                            {{ field }}
+                            <div class="form-error">{{ field.errors.as_ul }}</div>
+                        </div>
+                    {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </fieldset>
+
+        <fieldset>
+        <legend>Файлы</legend>
+        {{ files.management_form }}
+        {{ files.non_field_errors }}
+        {% for form in files %}
+            <div class="formset_row2">
+            {{ form.id }}
+            <div class="inline {{ premises.prefix }}">
+                {% for field in form.visible_fields %}
+                        <div>
+                            {# Include the hidden fields in the form #}
+                            {% if forloop.first %}
+                                {% for hidden in form.hidden_fields %}
+                                    {{ hidden }}
+                                {% endfor %}
+                            {% endif %}
+                            {{ field.label_tag }}
+                            {{ field }}
+                            <div class="form-error">{{ field.errors.as_ul }}</div>
+                        </div>
+                    {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </fieldset>
+    <p><input type="submit" value="Сохранить"></p>
+        </ul>
+</form>
+
+<script type="text/javascript">
+$('.formset_row').formset({
+    addText: 'Добавить помещение',
+    deleteText: '',
+    prefix: 'premises_set'
+});
+$('.formset_row2').formset({
+    addText: 'Добавить файл',
+    deleteText: '',
+    prefix: 'files_set'
+});
+
+var input = $('#input_file');
+var textarea = $('#test_box');
+
+function readfiles(files) {
+  for (var i = 0; i < files.length; i++) {
+
+    	reader = new FileReader();
+    	reader.onload = function(e) {
+		const file = e.target.result;
+		xml = $.parseXML(file);
+        var t=$(xml).find("build_record > object > common_data > cad_number")
+        $('#id_cad_num').val(t.text())
+        var t=$(xml).find("readable_address")
+        $('#id_adr_oks').val(t.text())
+        var t=$(xml).find("build_record > object > common_data > type > value")
+        if (t.text()=='build_record') {
+            $("#id_tip_oks [value='1']").attr("selected", "selected");
+        }
+
+		var textarea = $('#test_box');
+		t.each(function(){
+  			$(textarea).append($(this).text());
+ 		});
+
+	}
+    	reader.onerror = (e) => alert(e.target.error.name);
+	reader.readAsText(files[i]);
+  }
+}
+
+var holder = document.getElementById('holder');
+holder.ondragover = function () { this.className = 'hover'; return false; };
+holder.ondragend = function () { this.className = ''; return false; };
+holder.ondrop = function (e) {
+  this.className = '';
+  e.preventDefault();
+  readfiles(e.dataTransfer.files);
+}
+
+function showFile(input) {
+  let files = input.files;
+
+  readfiles(files)
+}
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,7 @@
+{% extends 'list/base.html' %}
+
+{% block content %}
+    {% for o in obj %}
+    <a href="{{ o.get_absolute_url }}">{{o.cad_num}} {{o.adr_oks|upper}}</a><br>
+    {% endfor %}
+{% endblock %}

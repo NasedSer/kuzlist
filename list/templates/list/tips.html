@@ -1,0 +1,9 @@
+{% extends 'list/base.html' %}
+
+{% block content %}
+{% for o in tips %}
+    {% if o.oks__count > 0 %}
+    <a href="{{ o.get_absolute_url }}">{{o.cad_num}} {{o.name|upper}} ({{o.oks__count}})</a><br>
+    {% endif %}
+{% endfor %}
+{% endblock %}

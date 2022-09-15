@@ -1,0 +1,139 @@
+{% extends 'list/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block link %}
+<script src="{% static 'list/js/jquery.formset.js' %}"></script>
+<style type = "text/css">
+#holder.hover { border: 5px dashed #0c0 !important; }
+#holder {
+justify-content: center;
+align-items: center;
+position: relative;
+right:0px;
+width:100%;
+height:100%;
+border: 5px dashed #ccc
+}
+.parent {  display: flex; text-align: center;}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<p><h1>Добавление объекта</h1></p>
+
+<div class="container-xxl">
+	<div class="row justify-content-md-center">
+    <div class="col">
+<div id="holder" >
+	<div class="position-absolute top-50 start-50 translate-middle">Брось сюда</div><input type="file"  id="input_file" style="opacity: 0.0; position: absolute; top: 0; left: 0; bottom: 0; right: 0; width: 100%; height:100%;" onchange="showFile(this)"/>
+</div>
+
+    </div>
+    <div class="col-6 p-3 shadow">
+      <form action="" method="post" enctype="multipart/form-data">
+{% crispy form %}
+</form>
+    </div>
+    <div class="col-sm">
+    </div>
+  </div>
+
+</div>
+
+
+<script type="text/javascript">
+var input = $('#input_file');
+var textarea = $('#test_box');
+
+function getxmltext(xml, query, el) {
+    var t=$(xml).find(query)
+    return t.text().trim().replace(/\s{2,}/g, ' ')
+}
+
+function get_obj_data(xml, t) {
+    $('#id_cad_num').val(getxmltext(xml, t + " > object > common_data > cad_number"))
+
+    $('#id_purpose').val(getxmltext(xml, "params > purpose > value"))
+    $('#id_naim').val(getxmltext(xml, "params > name"))
+
+    $('#id_adr_oks').val(getxmltext(xml, "readable_address" ))
+    $('#id_area').val(getxmltext(xml, "params > area"))
+    $('#id_floors').val(getxmltext(xml, "params > floors"))
+    $('#id_cost').val(getxmltext(xml, "cost > value"))
+
+    var t=getxmltext(xml, "right_records > right_record > right_holders > right_holder > legal_entity > entity > resident > name")
+    var t2=getxmltext(xml, "right_records > right_record > right_holders > right_holder > legal_entity > entity > resident > inn")
+    var t3=getxmltext(xml, "right_records > right_record > right_holders > right_holder > individual")
+    if (t!="") {
+        $('#id_right').val(t+'ИНН '+t2)
+    }
+    if (t3!="") {
+        $('#id_right').val(t3)
+    }
+
+
+	var t=$(xml).find("room_cad_numbers > room_cad_number")
+	t.each(function(){
+		$('[id^=id_premises_set]').last().val($(this).text().trim())
+		$('.add-row_premises_set').click();
+ 	});
+}
+
+function get_land_data(xml, t) {
+    $('#id_cad_num_land').val(getxmltext(xml, t + " > object > common_data > cad_number"))
+    $('#id_land_purpose').val(getxmltext(xml, "permitted_use_established > by_document"))
+    $('#id_land_area').val(getxmltext(xml, "params > area > value"))
+}
+
+function readxml(xml) {
+    var t=getxmltext(xml,"object > common_data > type > value")
+    if (t=='build_record') {
+        $("#id_tip_oks [value='1']").attr("selected", "selected");
+        get_obj_data(xml, t)
+    }
+    if (t=='room_record') {
+        $("#id_tip_oks [value='2']").attr("selected", "selected");
+        get_obj_data(xml, t)
+    }
+    if (t=='construction_record') {
+        $("#id_tip_oks [value='3']").attr("selected", "selected");
+        get_obj_data(xml, t)
+    }
+    if (t=='land_record') {
+        get_land_data(xml, t)
+    }
+
+}
+
+function readfiles(files) {
+  for (var i = 0; i < files.length; i++) {
+
+    reader = new FileReader();
+    reader.onload = function(e) {
+		const file = e.target.result;
+		xml = $.parseXML(file);
+        readxml(xml)
+
+	}
+    reader.onerror = (e) => alert(e.target.error.name);
+	reader.readAsText(files[i]);
+  }
+}
+
+var holder = document.getElementById('holder');
+holder.ondragover = function () { this.className = 'hover'; return false; };
+holder.ondragend = function () { this.className = ''; return false; };
+holder.ondrop = function (e) {
+  this.className = '';
+  e.preventDefault();
+  readfiles(e.dataTransfer.files);
+}
+
+function showFile(input) {
+  let files = input.files;
+
+  readfiles(files)
+}
+</script>
+{% endblock %}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Файл xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="VO_NEDIMKAD_2_010_03_0401_02.xsd" ИдФайл="VO_NEDIMKAD_4200_4200000647420501001_{{ xml_g }}" ТипИнф="НИОКадСт" ВерсФорм="4.02" КолДок="1" ДатаФайл="{{ Data_file }}" ГодНП="{{ year }}" КНД="1114414" ВерсПереч="1">
+	<КодНОПолуч>4200</КодНОПолуч>
+	<СвОргОбНед НаимОрг="Администрация Правительства Кузбасса" ИННЮЛ="4200000647" />
+    {% for object in query_set %}
+	<Документ ИдДок="{{object.uu}}">
+        <{% if object.tip == 2 %}СвПом КадНомПом{% else %}СвЗССП КадНомОбНед{% endif %}="{{ object.cad_name }}" />
+	</Документ>{% endfor %}
+</textFields>

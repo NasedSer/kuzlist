@@ -1,0 +1,106 @@
+{% extends 'list/base.html' %}
+{% load crispy_forms_tags %}
+{% load list_tags %}
+
+{% block link %}
+{% endblock %}
+
+
+{% block leftsidebar %}
+<form action="" method="get">
+   {% crispy filtered_per.form filtered_per.helper%}
+   <button type="submit" class="btn btn-sm btn-outline-secondary">Поиск</button>
+</form>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm text-start">
+      <h2 class="text-start">Перечень объектов</h2>
+    </div>
+    <div class="col-sm text-end my-auto">
+      <a href="/export_xls{% my_url 0 'page' request.GET.urlencode %}" class="btn btn-primary btn-sm">Экспорт в excel</a>
+        <a href="/export_xml{% my_url 0 'page' request.GET.urlencode %}" class="btn btn-primary btn-sm">Экспорт в xml</a>
+    </div>
+  </div>
+</div>
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="submit" name="delete" value="Удалить объекты" class="btn btn-sm btn-outline-secondary"/>
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Уд. <input type="checkbox" id="select_all" onclick="toggleChecked(this.checked)"></th>
+              <th>Кадастровый номер</th>
+              <th>Адрес</th>
+              <th>Тип объекта</th>
+              <th>Помещений</th>
+              <th>Файлов</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for o in page_obj %}
+            <tr>
+                <td>
+                    {{ forloop.counter|adjust_for_pagination:page_obj.start_index }}
+                </td>
+                <td><input type="checkbox" name="item" class="checkobj" value="{{o.pk}}"></td>
+                <td><a href="{{ o.oks.get_absolute_url }}">{{o.oks.cad_num}}</a></td>
+                <td>{{o.oks.adr_oks|truncatewords:8}}</td>
+                <td>{{o.oks.tip_oks}}</td>
+                <td>{{o.oks.num_premises}}</td>
+                <td>{{o.oks.num_files}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    <input type="submit" name="delete" value="Удалить объекты" class="btn btn-sm btn-outline-secondary"/>
+    </form>
+<script type="text/javascript">
+    function toggleChecked(status) {
+        $('.checkobj').each(function() {
+            $(this).attr("checked",status);
+        })
+    }
+</script>
+{% endblock %}
+
+{% block paginator %}
+        <div class="container-fluid">
+        <div class="row">
+        <div class="col">
+
+            Показано {{ page_obj.start_index }}-{{ page_obj.end_index }} из {{ page_obj.paginator.count }}
+        </div>
+            {% if page_obj.has_other_pages %}
+            <div class="col">
+                <p class="text-end">
+                    {% if page_obj.has_previous %}
+                    <a href="{% my_url page_obj.previous_page_number 'page' request.GET.urlencode %}" class="btn btn-sm shadow-none"><</a></li>
+                    {% else %}
+                    <a href="" class="btn btn-sm disabled"><</a>
+                    {% endif %}
+                    {% for p in page_obj.paginator.page_range %}
+                    {% if page_obj.number == p %}
+                    <a class="btn btn-sm btn-outline-secondary">{{ p }}</a>
+                    {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+                    <a href="{% my_url p 'page' request.GET.urlencode %}" class="btn btn-sm shadow-none" >{{ p }}</a>
+                    {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                    <a href="{% my_url page_obj.next_page_number 'page' request.GET.urlencode %}" class="btn btn-sm shadow-none">></a>
+                     {% else %}
+                    <a href="" class="btn btn-sm disabled">></a>
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+            </div>
+        </div>
+
+
+
+{% endblock %}
+

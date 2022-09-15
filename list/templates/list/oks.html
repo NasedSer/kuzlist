@@ -1,0 +1,83 @@
+{% extends 'list/base.html' %}
+
+{% block leftsidebar %}
+<div class="d-grid gap-2">
+  <button class="btn btn-outline-dark" type="button" data-bs-toggle="collapse" href="#collapseData" role="button" aria-expanded="false" aria-controls="collapseData">Данные объекта</button>
+  <button class="btn btn-outline-dark" type="button" data-bs-toggle="collapse" href="#collapseLand" role="button" aria-expanded="false" aria-controls="collapseLand">Земля</button>
+    <button class="btn btn-outline-dark" type="button" data-bs-toggle="collapse" href="#collapseRight" role="button" aria-expanded="false" aria-controls="collapseRight">Права</button>
+    <button class="btn btn-outline-dark" type="button" data-bs-toggle="collapse" href="#collapsePremises" role="button" aria-expanded="false" aria-controls="collapsePremises">Помещения</button>
+    <button class="btn btn-outline-dark" type="button" data-bs-toggle="collapse" href="#collapseNote" role="button" aria-expanded="false" aria-controls="collapseNote">Заметки</button>
+    <button class="btn btn-outline-dark" type="button" data-bs-toggle="collapse" href="#collapseFiles" role="button" aria-expanded="false" aria-controls="collapseFiles">Файлы</button>
+</div>
+
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+<h2>Объект </h2>
+<h4>Кадастровый номер</h4>
+{{obj.cad_num}}
+<h4>Тип объекта</h4>
+{{obj.tip_oks|upper}}
+    <div class="collapse" id="collapseData">
+        <h4>Адрес объекта</h4>
+        {{obj.adr_oks|upper}}
+        <div class="row">
+            <div class="col-md">
+                <h4>Площадь м2</h4>
+                {{obj.area}}
+            </div>
+            <div class="col-md">
+                <h4>Этажность</h4>
+                {{obj.floors}}
+            </div>
+            <div class="col-md">
+                <h4>Стоимость</h4>
+                {{obj.cost}}
+            </div>
+        </div>
+        <h4>Наименование</h4>
+        {{obj.naim}}
+        <h4>Использование</h4>
+        {{obj.purpose}}
+    </div>
+    <div class="collapse" id="collapseLand">
+        <h4>Кад номер земельного участка</h4>
+        {{obj.cad_num_land}}
+        <div class="row">
+            <div class="col-md">
+                <h4>Использование зем. уч.</h4>
+                {{obj.land_purpose}}
+            </div>
+            <div class="col-md">
+                <h4>Площадь зем. уч.</h4>
+                {{obj.land_area}}
+            </div>
+
+        </div>
+
+    </div>
+    <div class="collapse" id="collapseRight">
+        <h4>Права</h4>
+        {{obj.right}}
+    </div>
+    <div class="collapse" id="collapsePremises">
+        <h4>Помещения</h4>
+        {% for premises in obj.premises_set.all %}
+        <p>{{premises.cad_num}}</p>
+        {%endfor%}
+    </div>
+    <div class="collapse" id="collapseNote">
+        <h4>Заметки</h4>
+        {% for notes in obj.note_set.all %}
+        <p>{{notes.note}}</p>
+        {%endfor%}
+    </div>
+    <div class="collapse" id="collapseFiles">
+        <h4>Файлы</h4>
+        {% for files in obj.files_set.all %}
+        <p>{{files.file_url}}</p>
+        {%endfor%}
+    </div>
+</div>
+{% endblock %}
