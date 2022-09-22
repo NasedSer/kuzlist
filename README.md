@@ -13,7 +13,7 @@
     ```
 
 1. Активировать `venv` and install all dependencies (из файла requirements.txt)
-1. Create `new custom webapp` at pythonanywhere
+1. Создать `new custom webapp` 
 1. Fill in all the gaps
     1. Source code: - the path to the folder with `manage.py` (/home/denniskot/django-dummy/src)
     1. Virtualenv:
