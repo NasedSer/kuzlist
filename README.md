@@ -21,7 +21,7 @@
     1. Static files:
         1. Create in bash conslole folders `static` and `media` on the same level as `src` folder. (/home/denniskot/django-dummy/static and /home/denniskot/django-dummy/media)
         1. Add url `/static/` and directory `/home/домен/папкапроекта/static`
-        1. Add url `/media/` and directory `/home/домен/папкапроекта/media`
+        1. Add url `/files/` and directory `/home/домен/папкапроекта/files`
 1. `Edit WSGI configuration file` (click the link)
     1. Find "django" section
         1. Comment out django section
@@ -59,6 +59,6 @@
         # Change path in *_ROOT according to your static and media path
         MEDIA_URL = '/media/'
         STATIC_ROOT = '/home/домен/папкапроекта/static'
-        MEDIA_ROOT = '/home/домен/папкапроекта/media'
+        MEDIA_ROOT = '/home/домен/папкапроекта/files'
 
 
