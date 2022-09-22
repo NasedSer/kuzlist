@@ -20,13 +20,12 @@
         1. The path to the folder with virtual env (`/home/denniskot/django-dummy/env`)
     1. Static files:
         1. Create in bash conslole folders `static` and `media` on the same level as `src` folder. (/home/denniskot/django-dummy/static and /home/denniskot/django-dummy/media)
-        1. Add url `/static/` and directory `/home/denniskot/django-dummy/static`
-        1. Add url `/media/` and directory `/home/denniskot/django-dummy/media`
+        1. Add url `/static/` and directory `/home/домен/папкапроекта/static`
+        1. Add url `/media/` and directory `/home/домен/папкапроекта/media`
 1. `Edit WSGI configuration file` (click the link)
-    1. Comment "hello world" section
-    2. Find "django" section
+    1. Find "django" section
         1. Comment out django section
-        1. Change `path` to the folder with your 'manage.py' file (`/home/denniskot/django-dummy/src`)
+        1. Change `path` to the folder with your 'manage.py' file (`/home/домен/папкапроекта`)
         1. Change `os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.settings'` 
         where `mysite` is the project/module/folder name with 'settings.py' file
         (`os.environ['DJANGO_SETTINGS_MODULE'] = 'proj.settings'`)
@@ -53,14 +52,13 @@
 1. Edit settings.py
     1. edit 
         ```python
-        ALLOWED_HOSTS = ['yourloginname.pythonanywhere.com',]
+        ALLOWED_HOSTS = ['yourloginname.ako.ru',]
         ```
     2. add lines below STATIC_URL
         ```python
         # Change path in *_ROOT according to your static and media path
         MEDIA_URL = '/media/'
-        STATIC_ROOT = '/home/denniskot/django-dummy/static'
-        MEDIA_ROOT = '/home/denniskot/django-dummy/media'
+        STATIC_ROOT = '/home/домен/папкапроекта/static'
+        MEDIA_ROOT = '/home/домен/папкапроекта/media'
 
-1. reload webapp
 
