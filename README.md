@@ -49,12 +49,12 @@
         from django.core.wsgi import get_wsgi_application
         application = get_wsgi_application()
         ```
-1. Edit settings.py
+1. Отредактировать settings.py
     1. edit 
         ```python
         ALLOWED_HOSTS = ['yourloginname.ako.ru',]
         ```
-    2. add lines below STATIC_URL
+    2. edit lines below STATIC_URL
         ```python
         # Change path in *_ROOT according to your static and media path
         MEDIA_URL = '/media/'
