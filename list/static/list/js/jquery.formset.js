@@ -28,11 +28,13 @@
             },
 
             updateElementIndex = function(elem, prefix, ndx) {
+
                 var idRegex = new RegExp(prefix + '-(\\d+|__prefix__)-'),
                     replacement = prefix + '-' + ndx + '-';
                 if (elem.attr("for")) elem.attr("for", elem.attr("for").replace(idRegex, replacement));
                 if (elem.attr('id')) elem.attr('id', elem.attr('id').replace(idRegex, replacement));
                 if (elem.attr('name')) elem.attr('name', elem.attr('name').replace(idRegex, replacement));
+                console.log(replacement);
             },
 
             hasChildElements = function(row) {
@@ -55,7 +57,6 @@
             insertDeleteLink = function(row) {
                 var delCssSelector = $.trim(options.deleteCssClass).replace(/\s+/g, '.'),
                     addCssSelector = $.trim(options.addCssClass).replace(/\s+/g, '.');
-
                 var delButtonHTML = '<a class="' + options.deleteCssClass + '" href="javascript:void(0)">' + options.deleteText +'</a>';
                 if (options.deleteContainerClass) {
                     // If we have a specific container for the remove button,
@@ -92,12 +93,14 @@
                         del.val('on');
                         row.hide();
                         forms = $('.' + options.formCssClass).not(':hidden');
-                        totalForms.val(forms.length);
+                        //totalForms.val(forms.length);
+                        console.log('нажали удалить который был (скрыть)', totalForms.val());
                     } else {
                         row.remove();
                         // Update the TOTAL_FORMS count:
                         forms = $('.' + options.formCssClass).not('.formset-custom-template');
                         totalForms.val(forms.length);
+                        console.log('нажали удалить который не был', options.formCssClass, forms.length, totalForms.val());
                     }
                     for (var i=0, formCount=forms.length; i<formCount; i++) {
                         // Apply `extraClasses` to form rows so they're nicely alternating:
@@ -123,6 +126,7 @@
             };
 
         $$.each(function(i) {
+            console.log(totalForms.val());
             var row = $(this),
                 del = row.find('input:checkbox[id $= "-DELETE"]');
             if (del.length) {
@@ -143,13 +147,10 @@
             }
             if (hasChildElements(row)) {
                 row.addClass(options.formCssClass);
-                if (row.is(':visible')) {
+                if (row.css('display') !== 'none') {
                     insertDeleteLink(row);
                     applyExtraClasses(row, i);
-                } else {
-                    insertDeleteLink(row);
-                    applyExtraClasses(row, i);
-                }
+                };
             }
         });
 
@@ -208,16 +209,20 @@
             if (hideAddButton) addButton.hide();
 
             addButton.click(function() {
+                console.log('Нажали');
                 var formCount = parseInt(totalForms.val()),
                     row = options.formTemplate.clone(true).removeClass('formset-custom-template'),
                     buttonRow = $($(this).parents('tr.' + options.formCssClass + '-add').get(0) || this),
                     delCssSelector = $.trim(options.deleteCssClass).replace(/\s+/g, '.');
+                console.log(formCount);
+
                 applyExtraClasses(row, formCount);
                 row.insertBefore(buttonRow).show();
                 row.find(childElementSelector).each(function() {
                     updateElementIndex($(this), options.prefix, formCount);
                 });
                 totalForms.val(formCount + 1);
+                console.log(totalForms.val());
                 // Check if we're above the minimum allowed number of forms -> show all delete link(s)
                 if (showDeleteLinks()){
                     $('a.' + delCssSelector).each(function(){$(this).show();});

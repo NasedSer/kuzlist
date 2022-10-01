@@ -86,7 +86,7 @@ class OksViewCreate(LoginRequiredMixin, DataMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(OksViewCreate, self).get_context_data(**kwargs)
-        c_def = self.get_user_context(title="Добавление объекта")
+        c_def = self.get_user_context(title="Добавление объекта", edit_oks=False)
         if self.request.POST:
             context["premises"] = OKsPremisesFormSet(self.request.POST)
             context["note"] = OKsNoteFormSet(self.request.POST)
@@ -119,7 +119,7 @@ class OksViewCreate(LoginRequiredMixin, DataMixin, CreateView):
 
 class OksViewUpdate(LoginRequiredMixin, DataMixin, UpdateView):
     model = Oks
-    template_name = 'list/oks_edit.html'
+    template_name = 'list/test.html'
     success_url = '/index'
     login_url = '/admin/'
     form_class = TestForm
@@ -128,7 +128,7 @@ class OksViewUpdate(LoginRequiredMixin, DataMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(OksViewUpdate, self).get_context_data(**kwargs)
-        c_def = self.get_user_context(title="Редактирование объекта")
+        c_def = self.get_user_context(title="Редактирование объекта", edit_oks=True)
         if self.request.POST:
             context["premises"] = OKsPremisesFormSet(self.request.POST, instance=self.object)
             context["note"] = OKsNoteFormSet(self.request.POST, instance=self.object)
@@ -191,11 +191,11 @@ class TipListView(LoginRequiredMixin, DataMixin, ListView):
         return Tip.objects.annotate(Count('oks'))
 
 
-class PerListView(LoginRequiredMixin, DataMixin, ListView):
+class PerListView(DataMixin, ListView):
     model = Per
     template_name = 'list/perlist.html'
     context_object_name = 'obj'
-    allow_empty = False
+    allow_empty = True
     login_url = '/admin/'
 
     def post(self, request, *args, **kwargs):
@@ -239,7 +239,7 @@ class PerListGestView(DataMixin, ListView):
     model = Per
     template_name = 'list/pergestlist.html'
     context_object_name = 'obj'
-    allow_empty = False
+    allow_empty = True
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -292,10 +292,10 @@ class ObjsAddToPerListView(LoginRequiredMixin, DataMixin, ListView):
 
         context = super().get_context_data(**kwargs)
         data = self.request.GET.copy()
-        if 'year_per' not in data:
+        if 'per__year_per' not in data:
             q = Year.objects.all().order_by('-id')
             if q.count() > 0:
-                data['year_per'] = q.values('id')[0]['id']
+                data['per__year_per'] = q.values('id')[0]['id']
         filtered_per = OksFilter(
             data,
             queryset=Oks.objects.order_by('adr_oks_sort')
@@ -318,7 +318,7 @@ class ObjsAddToPerListView(LoginRequiredMixin, DataMixin, ListView):
             filtered_per = filtered_per,
             page_obj = page_obj,
             years = years,
-            year_per = int(data['year_per'])
+            year_per = int(data['per__year_per'])
         )
 
         return dict(list(context.items()) + list(c_def.items()))
@@ -529,7 +529,8 @@ def export_xml(request):
         q = Year.objects.all().order_by('-id')
         if q.count() > 0:
             data['year_per'] = q.values('id')[0]['id']
-            year_name = q.values('id')[0]['name']
+            q = Year.objects.get(pk=data['year_per'])
+            year_name = q
     else:
         q = Year.objects.get(pk=data['year_per'])
         year_name = q

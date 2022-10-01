@@ -6,6 +6,7 @@ from import_export.admin import ImportExportModelAdmin
 from import_export.fields import Field
 from django.core.exceptions import ValidationError
 from import_export.widgets import ForeignKeyWidget
+from django.forms import Textarea
 
 from .models import *
 
@@ -22,6 +23,9 @@ class PremisesInLine(admin.TabularInline):
 
 class NoteInLine(admin.TabularInline):
     model = Note
+    formfield_overrides = {
+        models.TextField: {'widget': Textarea(attrs={'rows':3, 'cols':40})},
+    }
     extra = 0
 
 
@@ -50,11 +54,14 @@ class OksAdmin(ImportExportModelAdmin):
 
     list_display = ('cad_num', 'adr_oks', 'tip_oks', 'oks_files_count', 'premises_files_count')
     list_display_links = ('cad_num',)
-    search_fields = ('cad_num',)
+    search_fields = ('cad_num', 'adr_oks', )
     list_filter = ('tip_oks',)
     inlines = [FileInLine, PremisesInLine, NoteInLine]
     fields = ('cad_num', 'adr_oks', 'tip_oks', 'area', 'cad_num_land', 'land_purpose', 'land_area',
          'floors', 'purpose', 'naim', 'cost', 'right')
+    formfield_overrides = {
+        models.TextField: {'widget': Textarea(attrs={'rows':3, 'cols':40})},
+    }
     list_per_page = 100
     save_on_top = True
     resource_class = OksResource

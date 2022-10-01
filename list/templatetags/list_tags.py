@@ -30,7 +30,7 @@ def show_tips(tip_select=0):
 @register.inclusion_tag('list/menu.html')
 def show_menu(user_is_login=False):
     menu = [{'title': "Перечень", 'url_name': 'home', 'icon_name': 'fa fa-home'},
-            {'title': "Перечень", 'url_name': 'per', 'icon_name': 'fa fa-home'},
+            {'title': "Перечень", 'url_name': 'home', 'icon_name': 'fa fa-home'},
             {'title': "Объекты", 'url_name': 'home', 'icon_name': 'fa fa-university', 'sub_menu': [
                 {'title': "Добавить объект", 'url_name': 'add_obj_inline'},
                 {'title': "Добавить объект в перечень", 'url_name': 'add_obj_to_per'},

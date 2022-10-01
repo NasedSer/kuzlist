@@ -3,6 +3,9 @@
         {{ formset.non_field_errors }}
         {% for form in formset.forms %}
         {% if forloop.first %}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
         {% endif %}
         <div class="formset_row-{{ formset.prefix }}">
             <div class='row'>
@@ -10,20 +13,18 @@
             {{ form.id }}
             <div class="inline {{ formset.prefix }}">
                 {% for field in form.visible_fields %}
+                        {% if field.name != "DELETE" %}
                         <div>
-                            {# Include the hidden fields in the form #}
-                            {% if forloop.first %}
-                                {% for hidden in form.hidden_fields %}
-                                    {{ hidden }}
-                                {% endfor %}
-                            {% endif %}
                             {{ field|as_crispy_field }}
                             <div class="form-error">{{ field.errors.as_ul }}</div>
                         </div>
+                        {% endif %}
                 {% endfor %}
             </div>
             </div>
-                <div class='col-2'> </div>
+                {% if formset.can_delete %}
+                <div class='col-2'>{{ form.DELETE }}</div>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
@@ -35,6 +36,7 @@ $('.formset_row-{{ formset.prefix }}').formset({
     addCssClass: 'add-row_{{ formset.prefix }} btn btn-info',
     deleteCssClass:' delete-row btn btn-danger',
     deleteContainerClass: 'col-2',
-    prefix: '{{ formset.prefix }}'
+    prefix: '{{ formset.prefix }}',
+    formCssClass: 'formset_row-{{ formset.prefix }}',
 });
 </script>

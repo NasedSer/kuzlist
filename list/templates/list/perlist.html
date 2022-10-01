@@ -5,6 +5,44 @@
 {% block link %}
 {% endblock %}
 
+{% block centrbar %}
+{% if user_is_login %}
+<div class="navbarCentr">
+<ul >
+<li>
+<a href="/" id="deleteAOks" class="nav-link active text-white">
+<svg width="24" height="24" fill="currentColor" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+</svg>
+<span class="for-large-screens text-white">Удалить объекты</span>
+</a>
+</li>
+
+<li>
+<a href="/export_xls{% my_url 0 'page' request.GET.urlencode %}" class="nav-link active text-white">
+<svg width="24" height="24" fill="currentColor" fill="currentColor" class="bi bi-file-earmark-spreadsheet" viewBox="0 0 16 16">
+	<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V9H3V2a1 1 0 0 1 1-1h5.5v2zM3 12v-2h2v2H3zm0 1h2v2H4a1 1 0 0 1-1-1v-1zm3 2v-2h3v2H6zm4 0v-2h3v1a1 1 0 0 1-1 1h-2zm3-3h-3v-2h3v2zm-7 0v-2h3v2H6z"/>
+</svg>
+<span class="for-large-screens">
+Экспорт в excel
+</span>
+</a>
+</li>
+
+<li>
+<a href="/export_xml{% my_url 0 'page' request.GET.urlencode %}" class="nav-link active text-white">
+<svg width="24" height="24" fill="currentColor" fill="currentColor" class="bi bi-filetype-xml" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M14 4.5V14a2 2 0 0 1-2 2v-1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5L14 4.5ZM3.527 11.85h-.893l-.823 1.439h-.036L.943 11.85H.012l1.227 1.983L0 15.85h.861l.853-1.415h.035l.85 1.415h.908l-1.254-1.992 1.274-2.007Zm.954 3.999v-2.66h.038l.952 2.159h.516l.946-2.16h.038v2.661h.715V11.85h-.8l-1.14 2.596h-.025L4.58 11.85h-.806v3.999h.706Zm4.71-.674h1.696v.674H8.4V11.85h.791v3.325Z"/>
+</svg>
+<span class="for-large-screens">
+Экспорт в xml
+</span>
+</a>
+</li>
+</ul>
+</div>
+{% endif %}
+{% endblock %}
 
 {% block leftsidebar %}
 <form action="" method="get">
@@ -19,25 +57,26 @@
     <div class="col-sm text-start">
       <h2 class="text-start">Перечень объектов</h2>
     </div>
-    <div class="col-sm text-end my-auto">
-      <a href="/export_xls{% my_url 0 'page' request.GET.urlencode %}" class="btn btn-primary btn-sm">Экспорт в excel</a>
-        <a href="/export_xml{% my_url 0 'page' request.GET.urlencode %}" class="btn btn-primary btn-sm">Экспорт в xml</a>
-    </div>
   </div>
 </div>
+{% if user_is_login %}
     <form action="" method="post">
         {% csrf_token %}
-        <input type="submit" name="delete" value="Удалить объекты" class="btn btn-sm btn-outline-secondary"/>
+{% endif %}
         <table class="table table-striped table-sm">
           <thead>
             <tr>
               <th>#</th>
+              {% if user_is_login %}
               <th>Уд. <input type="checkbox" id="select_all" onclick="toggleChecked(this.checked)"></th>
+              {% endif %}
               <th>Кадастровый номер</th>
               <th>Адрес</th>
               <th>Тип объекта</th>
               <th>Помещений</th>
+              {% if user_is_login %}
               <th>Файлов</th>
+              {% endif %}
             </tr>
           </thead>
           <tbody>
@@ -46,17 +85,26 @@
                 <td>
                     {{ forloop.counter|adjust_for_pagination:page_obj.start_index }}
                 </td>
+                {% if user_is_login %}
                 <td><input type="checkbox" name="item" class="checkobj" value="{{o.pk}}"></td>
+                {% endif %}
+                {% if user_is_login %}
                 <td><a href="{{ o.oks.get_absolute_url }}">{{o.oks.cad_num}}</a></td>
+                {% else %}
+                <td>{{o.oks.cad_num}}</td>
+                {% endif %}
                 <td>{{o.oks.adr_oks|truncatewords:8}}</td>
                 <td>{{o.oks.tip_oks}}</td>
                 <td>{{o.oks.num_premises}}</td>
+                {% if user_is_login %}
                 <td>{{o.oks.num_files}}</td>
+                {% endif %}
             </tr>
             {% endfor %}
           </tbody>
         </table>
-    <input type="submit" name="delete" value="Удалить объекты" class="btn btn-sm btn-outline-secondary"/>
+{% if user_is_login %}
+    <input id="deletOks" type="submit" name="delete" value="Удалить объекты" class="btn btn-sm btn-outline-secondary d-none"/>
     </form>
 <script type="text/javascript">
     function toggleChecked(status) {
@@ -64,7 +112,16 @@
             $(this).attr("checked",status);
         })
     }
+
+    function delOks() {
+        	$("#deletOks").trigger('click');
+        	return false;
+    }
+
+
+    $("#deleteAOks").click(function () {$("#deletOks").trigger('click'); return false;});
 </script>
+{% endif %}
 {% endblock %}
 
 {% block paginator %}

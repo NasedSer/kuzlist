@@ -138,15 +138,15 @@ class TestForm(ModelForm):
                     Field('right', rows='3'),
                     ),
                 Tab('Помещения',
-                    HTML('<div class="row">    <div class="col-10">Кадастровый номер </div>    <div class="col-sm"> </div>    </div>'),
+                    HTML('<div class="row">    <div class="col-10">Кадастровый номер </div>    <div class="col-sm">Удалить </div>    </div>'),
                     Formset('premises'),
                     ),
                 Tab('Заметки',
-                    HTML('<div class="row">    <div class="col-10">Текст заметки </div>    <div class="col-sm"> </div>    </div>'),
+                    HTML('<div class="row">    <div class="col-10">Текст заметки </div>    <div class="col-sm">Удалить </div>    </div>'),
                     Formset('note'),
                     ),
                 Tab('Файлы',
-                    HTML('<div class="row">    <div class="col-10">Файлы </div>    <div class="col-sm"> </div>    </div>'),
+                    HTML('<div class="row">    <div class="col-10">Файлы </div>    <div class="col-sm"> Удалить</div>    </div>'),
                     Formset('files'),
                     ),
             ),
@@ -221,7 +221,7 @@ OKsNoteFormSet = inlineformset_factory(
     Oks, Note, form=NoteForm, extra=1, can_delete=True
 )
 
-OKsInlineFormSet = inlineformset_factory(Oks, Files, fields='__all__', extra=1, can_delete=True)
+OKsInlineFormSet = inlineformset_factory(Oks, Files, fields='__all__', extra=0, can_delete=True)
 
 
 PerFormSet = inlineformset_factory(
